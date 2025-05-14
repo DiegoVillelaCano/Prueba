@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventario de Productos</title>
+    <!-- Incluyo Bootstrap para estilos rápidos y responsive -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+
+<!-- Contenedor principal -->
+<div class="container mt-4">
+    <h2>Inventario de productos</h2>
+    <!-- Botón que abre el modal para crear un nuevo producto -->
+    <button class="btn btn-success" onclick="abrirModalNuevo()">Ingresar nuevo producto</button>
+
+    <!-- Tabla que muestra los productos -->
+    <table class="table table-striped">
+        <thead class="thead-light">
+            <tr>
+                <th>#</th>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Precio</th>
+                <th>Cantidad</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for producto in productos %}
+            <tr>
+                <td>{{ producto.id }}</td>
+                <td>{{ producto.nombre }}</td>
+                <td>{{ producto.descripcion }}</td>
+                <td>{{ producto.precio }}</td>
+                <td>{{ producto.cantidad }}</td>
+                <td>
+                    <!-- Botón para editar, que abre el modal con los datos del producto -->
+                    <button class="btn btn-primary btn-sm"
+                        onclick="abrirModalEditar({{ producto.id }}, '{{ producto.nombre }}', '{{ producto.descripcion }}', {{ producto.precio }}, {{ producto.cantidad }})">
+                        &nbsp;&nbsp;Editar&nbsp;
+                    </button>
+                    <!-- Enlace para eliminar con confirmación -->
+                    <a href="{{ url_for('eliminar', id=producto.id) }}" class="btn btn-danger btn-sm"
+                        onclick="return confirm('¿Estás seguro que deseas eliminar este producto?');">Eliminar</a>
+                </td>
+            </tr>
+            {% else %}
+            <!-- Si no hay productos, muestro mensaje -->
+            <tr>
+                <td colspan="6" class="text-center">No hay productos registrados</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal Bootstrap para crear o editar un producto -->
+<div class="modal fade" id="productoModal" tabindex="-1" role="dialog" aria-labelledby="productoModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <!-- Formulario que se envía al backend -->
+    <form method="POST" action="/guardar">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="productoModalLabel">Nuevo Producto</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <!-- Cuerpo del modal con los campos del producto -->
+        <div class="modal-body">
+          <input type="hidden" name="id" id="productoId">
+          <div class="form-group">
+            <label>Nombre</label>
+            <input type="text" class="form-control" name="nombre" id="productoNombre" required>
+          </div>
+          <div class="form-group">
+            <label>Descripción</label>
+            <input type="text" class="form-control" name="descripcion" id="productoDescripcion" required>
+          </div>
+          <div class="form-group">
+            <label>Precio</label>
+            <input type="number" step="0.01" class="form-control" name="precio" id="productoPrecio" required>
+          </div>
+          <div class="form-group">
+            <label>Cantidad</label>
+            <input type="number" class="form-control" name="cantidad" id="productoCantidad" required>
+          </div>
+        </div>
+
+        <!-- Footer del modal con los botones -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-success">Confirmar</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Scripts de jQuery y Bootstrap para funcionamiento del modal -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+<!-- Función para abrir el modal vacío (nuevo producto) -->
+<script>
+  function abrirModalNuevo() {
+    document.getElementById('productoModalLabel').innerText = "Nuevo Producto";
+    document.getElementById('productoId').value = "";
+    document.getElementById('productoNombre').value = "";
+    document.getElementById('productoDescripcion').value = "";
+    document.getElementById('productoPrecio').value = "";
+    document.getElementById('productoCantidad').value = "";
+    $('#productoModal').modal('show');
+  }
+
+  // Función para abrir el modal cargado con los datos del producto (modo edición)
+  function abrirModalEditar(id, nombre, descripcion, precio, cantidad) {
+    document.getElementById('productoModalLabel').innerText = "Editar Producto";
+    document.getElementById('productoId').value = id;
+    document.getElementById('productoNombre').value = nombre;
+    document.getElementById('productoDescripcion').value = descripcion;
+    document.getElementById('productoPrecio').value = precio;
+    document.getElementById('productoCantidad').value = cantidad;
+    $('#productoModal').modal('show');
+  }
+</script>
+
+</body>
+</html>
