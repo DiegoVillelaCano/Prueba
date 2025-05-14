@@ -1,7 +1,7 @@
 from flask import Flask
 from flask import render_template
 from flask_sqlalchemy import SQLAlchemy
-
+import os
 
 # Inicializo mi aplicación Flask
 app = Flask(__name__)
