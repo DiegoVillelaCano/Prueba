@@ -12,18 +12,21 @@
 <!-- Contenedor principal -->
 <div class="container mt-4">
     <h2>Inventario de productos</h2>
-    <!-- Botón que abre el modal para crear un nuevo producto -->
-    <button class="btn btn-success" onclick="abrirModalNuevo()">Ingresar nuevo producto</button>
-    
-    <form method="get" action="/buscar" style="margin-bottom: 20px;">
-    <input type="text" name="buscar_id" placeholder="Buscar por ID" required>
-    <button type="submit">Buscar</button>
-    {% if mensaje %}
-        <a href="/" style="margin-left: 10px;">
-            <button type="button">Regresar</button>
-        </a>
-    {% endif %}
-</form>
+    <!-- Botón que abre el modal para crear un nuevo producto y buscar por ID -->
+    <div class="row mb-3">
+    <div class="col-md-auto">
+        <button class="btn btn-success" onclick="abrirModalNuevo()">Ingresar nuevo producto</button>
+    </div>
+    <div class="col">
+        <form method="get" action="/buscar" class="form-inline d-flex">
+            <input type="text" name="buscar_id" placeholder="Buscar por ID" required class="form-control mr-2" style="max-width: 200px;">
+            <button type="submit" class="btn btn-primary mr-2">Buscar</button>
+            {% if mensaje %}
+                <a href="/" class="btn btn-danger">Regresar</a>
+            {% endif %}
+        </form>
+    </div>
+</div>
     
     <!-- Tabla que muestra los productos -->
     <table class="table table-striped">
