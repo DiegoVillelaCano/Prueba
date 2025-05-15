@@ -15,12 +15,15 @@
     <!-- Botón que abre el modal para crear un nuevo producto y buscar por ID -->
     <div class="row mb-3">
     <div class="col-md-auto">
+          <!-- Botón para abrir el modal de nuevo producto -->
         <button class="btn btn-success" onclick="abrirModalNuevo()">Ingresar nuevo producto</button>
     </div>
     <div class="col">
+        <!-- Formulario para buscar producto por ID -->
         <form method="get" action="/buscar" class="form-inline d-flex">
             <input type="text" name="buscar_id" placeholder="Buscar por ID" required class="form-control mr-2" style="max-width: 200px;">
             <button type="submit" class="btn btn-primary mr-2">Buscar</button>
+             <!-- Si hay mensaje, mostrar botón para regresar -->
             {% if mensaje %}
                 <a href="/" class="btn btn-danger">Regresar</a>
             {% endif %}
@@ -41,6 +44,7 @@
             </tr>
         </thead>
         <tbody>
+            <!-- Bucle para mostrar productos -->
             {% for producto in productos %}
             <tr>
                 <td>{{ producto.id }}</td>
@@ -148,7 +152,7 @@
     $('#productoModal').modal('show');
   }
 </script>
-    
+ // Si se requiere reabrir el modal (por ejemplo, después de un error), lo abre automáticamente    
 {% if modal_abierto %}
 <script>
   $(document).ready(function(){
