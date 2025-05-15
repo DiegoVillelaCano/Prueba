@@ -41,25 +41,46 @@ def eliminar(id):
 # Ruta para guardar un producto (tanto nuevo como editado)
 @app.route('/guardar', methods=['POST'])
 def guardar():
-    id = request.form['id']
-    nombre = request.form['nombre']
-    descripcion = request.form['descripcion']
-    precio = request.form['precio']
-    cantidad = request.form['cantidad']
+    id = request.form['id'].strip()  
+    nombre = request.form['nombre'].strip()
+    descripcion = request.form['descripcion'].strip()
+    precio = request.form['precio'].strip()
+    cantidad = request.form['cantidad'].strip()
 
-    if id:  # Si hay ID, entonces es una edición
+    # Validación de campos obligatorios
+    if not nombre or not descripcion or not precio or not cantidad:
+        return "Error: Todos los campos (excepto ID) son obligatorios.", 400
+
+    # Validación de tipos de datos y valores positivos
+    try:
+        precio = float(precio)
+        cantidad = int(cantidad)
+
+        if precio <= 0 or cantidad <= 0:
+            return "Error: Precio y Cantidad deben ser mayores a 0.", 400
+
+    except ValueError:
+        return "Error: Precio debe ser un número y Cantidad debe ser un entero.", 400
+
+    if id:  # Edición
         producto = Producto.query.get(id)
+        if not producto:
+            return "Error: Producto no encontrado.", 404
         producto.nombre = nombre
         producto.descripcion = descripcion
         producto.precio = precio
         producto.cantidad = cantidad
-    else:  # Si no hay ID, es un producto nuevo
-        producto = Producto(nombre=nombre, descripcion=descripcion, precio=precio, cantidad=cantidad)
-        db.session.add(producto)  
+    else:  # Nuevo producto
+        producto = Producto(
+            nombre=nombre,
+            descripcion=descripcion,
+            precio=precio,
+            cantidad=cantidad
+        )
+        db.session.add(producto)
 
-    db.session.commit()  # Confirmo cambios en la base de datos
-    return redirect(url_for('index'))  # Redirijo al inicio
-
+    db.session.commit()
+    return redirect(url_for('index'))
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
