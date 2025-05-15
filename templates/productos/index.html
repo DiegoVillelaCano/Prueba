@@ -84,25 +84,33 @@
 
         <!-- Cuerpo del modal con los campos del producto -->
         <div class="modal-body">
-          <input type="hidden" name="id" id="productoId">
-          <div class="form-group">
+        {% if errores %}
+            <div class="alert alert-danger">
+                <ul class="mb-0">
+                    {% for error in errores %}
+                      <li>{{ error }}</li>
+                    {% endfor %}</ul>
+            </div>
+            {% endif %}
+        <input type="hidden" name="id" id="productoId" value="{{ producto_form.id if producto_form else '' }}">
+        <div class="form-group">
             <label>Nombre</label>
-            <input type="text" class="form-control" name="nombre" id="productoNombre" required>
-          </div>
-          <div class="form-group">
-            <label>Descripción</label>
-            <input type="text" class="form-control" name="descripcion" id="productoDescripcion" required>
-          </div>
-          <div class="form-group">
-            <label>Precio</label>
-            <input type="number" step="0.01" class="form-control" name="precio" id="productoPrecio" required>
-          </div>
-          <div class="form-group">
-            <label>Cantidad</label>
-            <input type="number" class="form-control" name="cantidad" id="productoCantidad" required>
-          </div>
+            <input type="text" class="form-control" name="nombre" id="productoNombre" required value="{{ producto_form.nombre if producto_form else '' }}">
         </div>
-
+        <div class="form-group">
+         <label>Descripción</label>
+        <input type="text" class="form-control" name="descripcion" id="productoDescripcion" required value="{{ producto_form.descripcion if producto_form else '' }}">
+        </div>
+            <div class="form-group">
+                <label>Precio</label>
+            <input type="number" step="0.01" class="form-control" name="precio" id="productoPrecio" required value="{{ producto_form.precio if producto_form else '' }}">
+            </div>
+            <div class="form-group">
+                <label>Cantidad</label>
+                <input type="number" class="form-control" name="cantidad" id="productoCantidad" required value="{{ producto_form.cantidad if producto_form else '' }}">
+            </div>
+        </div>
+          
         <!-- Footer del modal con los botones -->
         <div class="modal-footer">
           <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
@@ -140,6 +148,14 @@
     $('#productoModal').modal('show');
   }
 </script>
+    
+{% if modal_abierto %}
+<script>
+  $(document).ready(function(){
+    $('#productoModal').modal('show');
+  });
+</script>
+{% endif %}
 
 </body>
 </html>
