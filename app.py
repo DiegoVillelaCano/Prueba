@@ -81,6 +81,18 @@ def guardar():
 
     db.session.commit()
     return redirect(url_for('index'))
+    
+@app.route('/buscar', methods=['GET'])# Buscar producto
+def buscar():
+    id = request.args.get('buscar_id', '').strip()
+
+    if not id.isdigit():
+        return "Error: El ID debe ser un número entero.", 400
+    producto = Producto.query.get(int(id))
+    if not producto:
+        return render_template("productos/index.html", productos=[], mensaje=f"No se encontró el producto con ID {id}")
+    return render_template("productos/index.html", productos=[producto], mensaje=f"Mostrando producto con ID {id}")
+
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
