@@ -41,42 +41,35 @@ def eliminar(id):
 # Ruta para guardar un producto (tanto nuevo como editado)
 @app.route('/guardar', methods=['POST'])
 def guardar():
-    id = request.form['id'].strip()  
-    nombre = request.form['nombre'].strip()
-    descripcion = request.form['descripcion'].strip()
-    precio = request.form['precio'].strip()
-    cantidad = request.form['cantidad'].strip()
+    id = request.form['id']
+    nombre = request.form['nombre']
+    descripcion = request.form['descripcion']
+    precio = request.form['precio']
+    cantidad = request.form['cantidad']
 
-    # Validación de campos obligatorios
+    errores = []
+ # Validación de campos obligatorios
     if not nombre or not descripcion or not precio or not cantidad:
-        return "Error: Todos los campos (excepto ID) son obligatorios.", 400
+        errores.append("Todos los campos deben estar completos.")
+    if precio and float(precio) <= 0:
+        errores.append("El precio debe ser mayor a 0.")
+    if cantidad and int(cantidad) <= 0:
+        errores.append("La cantidad debe ser mayor a 0.")
 
-    # Validación de tipos de datos y valores positivos
-    try:
-        precio = float(precio)
-        cantidad = int(cantidad)
+    if errores:
+        productos = Producto.query.all()
+        return render_template("productos/index.html", productos=productos, errores=errores,
+                               modal_abierto=True, producto_form={"id": id, "nombre": nombre, "descripcion": descripcion,
+                                                                  "precio": precio, "cantidad": cantidad})
 
-        if precio <= 0 or cantidad <= 0:
-            return "Error: Precio y Cantidad deben ser mayores a 0.", 400
-
-    except ValueError:
-        return "Error: Precio debe ser un número y Cantidad debe ser un entero.", 400
-
-    if id:  # Edición
+    if id:# Edición
         producto = Producto.query.get(id)
-        if not producto:
-            return "Error: Producto no encontrado.", 404
         producto.nombre = nombre
         producto.descripcion = descripcion
         producto.precio = precio
         producto.cantidad = cantidad
-    else:  # Nuevo producto
-        producto = Producto(
-            nombre=nombre,
-            descripcion=descripcion,
-            precio=precio,
-            cantidad=cantidad
-        )
+    else: # Nuevo producto
+        producto = Producto(nombre=nombre, descripcion=descripcion, precio=precio, cantidad=cantidad)
         db.session.add(producto)
 
     db.session.commit()
