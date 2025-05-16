@@ -11,6 +11,9 @@
 
 <!-- Contenedor principal -->
 <div class="container mt-4">
+    {% if mensaje %}
+    <div class="alert alert-info">{{ mensaje }}</div>
+{% endif %}
     <h2>Inventario de productos</h2>
     <!-- Botón que abre el modal para crear un nuevo producto y buscar por ID -->
     <div class="row mb-3">
