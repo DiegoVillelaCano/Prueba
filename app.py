@@ -73,14 +73,16 @@ def guardar():
         db.session.add(producto)
 
     db.session.commit()
-    return redirect(url_for('index'))
+    return redirect(url_for('index'))# Buscar producto
     
 @app.route('/buscar', methods=['GET'])# Buscar producto
 def buscar():
     id = request.args.get('buscar_id', '').strip()
 
     if not id.isdigit():
-        return "Error: El ID debe ser un número entero.", 400
+        productos = Producto.query.all()
+        return render_template("productos/index.html", productos=productos, mensaje="El ID debe ser un número entero.")
+        
     producto = Producto.query.get(int(id))
     if not producto:
         return render_template("productos/index.html", productos=[], mensaje=f"No se encontró el producto con ID {id}")
